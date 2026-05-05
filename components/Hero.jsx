@@ -13,8 +13,8 @@ export default function Hero() {
     return () => [t1, t2, t3].forEach(clearTimeout);
   }, []);
 
-  const isActive       = phase === "reveal" || phase === "full";
-  const isFullyActive  = phase === "full";
+  const isActive      = phase === "reveal" || phase === "full";
+  const isFullyActive = phase === "full";
 
   return (
     <section
@@ -25,10 +25,7 @@ export default function Hero() {
       {/* ── FONDO IMAGEN ── */}
       <div
         className="absolute inset-0 z-0"
-        style={{
-          opacity: isActive ? 1 : 0,
-          transition: "opacity 1.2s ease",
-        }}
+        style={{ opacity: isActive ? 1 : 0, transition: "opacity 1.4s ease" }}
       >
         <Image
           src="/hero-bg.png"
@@ -53,7 +50,7 @@ export default function Hero() {
       <div
         className="absolute inset-0 pointer-events-none z-10"
         style={{
-          background: "radial-gradient(ellipse at 65% 55%, rgba(170,255,0,0.18) 0%, transparent 55%)",
+          background: "radial-gradient(ellipse at 65% 55%, rgba(170,255,0,0.16) 0%, transparent 55%)",
           opacity: isFullyActive ? 1 : 0,
           transition: "opacity 1.2s ease",
           animation: isFullyActive ? "pulseEnergy 4s ease-in-out infinite" : "none",
@@ -65,16 +62,16 @@ export default function Hero() {
         className="absolute inset-0 pointer-events-none z-10"
         style={{
           backgroundImage:
-            "repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.06) 2px,rgba(0,0,0,0.06) 4px)",
+            "repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.05) 2px,rgba(0,0,0,0.05) 4px)",
         }}
       />
 
-      {/* ── GRADIENTE IZQUIERDO para legibilidad ── */}
+      {/* ── GRADIENTE IZQUIERDO ── */}
       <div
         className="absolute inset-0 z-10 pointer-events-none"
         style={{
           background:
-            "linear-gradient(90deg, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.70) 35%, rgba(0,0,0,0.15) 58%, transparent 72%)",
+            "linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.72) 32%, rgba(0,0,0,0.10) 56%, transparent 70%)",
         }}
       />
 
@@ -82,22 +79,67 @@ export default function Hero() {
       <div
         className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none"
         style={{
-          height: "30%",
-          background: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%)",
+          height: "28%",
+          background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%)",
         }}
       />
+
+      {/* ── VIDEO TARRO (lado derecho) ── */}
+      <div
+        className="absolute z-20"
+        style={{
+          right: "6%",
+          top: "50%",
+          transform: isFullyActive
+            ? "translateY(-50%) scale(1)"
+            : "translateY(-42%) scale(0.88)",
+          opacity: isFullyActive ? 1 : 0,
+          transition: "all 1.3s cubic-bezier(0.22,1,0.36,1) 0.7s",
+          width: "clamp(280px, 38vw, 560px)",
+          pointerEvents: "none",
+        }}
+      >
+        {/* Glow detrás del video */}
+        <div
+          style={{
+            position: "absolute",
+            inset: "-30px",
+            background:
+              "radial-gradient(ellipse at center, rgba(170,255,0,0.30) 0%, transparent 70%)",
+            filter: "blur(24px)",
+            zIndex: 0,
+          }}
+        />
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          style={{
+            width: "100%",
+            height: "auto",
+            objectFit: "contain",
+            filter: "drop-shadow(0 0 32px rgba(170,255,0,0.55)) drop-shadow(0 0 60px rgba(170,255,0,0.25))",
+            position: "relative",
+            zIndex: 1,
+          }}
+        >
+          <source src="/tarro.mp4" type="video/mp4" />
+        </video>
+      </div>
 
       {/* ── NAVBAR ── */}
       <nav
         className="absolute top-0 left-0 right-0 z-40 flex items-center justify-between px-10 py-4"
         style={{
-          borderBottom: "1px solid rgba(170,255,0,0.15)",
+          borderBottom: "1px solid rgba(170,255,0,0.12)",
           opacity: isFullyActive ? 1 : 0,
           transform: isFullyActive ? "translateY(0)" : "translateY(-20px)",
           transition: "all 0.8s ease 0.3s",
+          backdropFilter: "blur(6px)",
+          background: "rgba(0,0,0,0.35)",
         }}
       >
-        {/* Logo */}
         <div className="flex items-center gap-3">
           <div
             className="flex items-center justify-center rounded-md"
@@ -117,7 +159,6 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Links */}
         <div className="flex gap-8">
           {["INICIO", "TIENDA", "BENEFICIOS", "SOBRE NOSOTROS", "CONTACTO"].map((l) => (
             <a
@@ -129,6 +170,7 @@ export default function Hero() {
                 letterSpacing: 3,
                 color: "rgba(255,255,255,0.65)",
                 textDecoration: "none",
+                transition: "color 0.2s",
               }}
               onMouseEnter={(e) => (e.target.style.color = "#aaff00")}
               onMouseLeave={(e) => (e.target.style.color = "rgba(255,255,255,0.65)")}
@@ -138,7 +180,6 @@ export default function Hero() {
           ))}
         </div>
 
-        {/* Cart */}
         <div className="flex items-center gap-4">
           <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth={1.5} width={22} height={22}>
             <circle cx="12" cy="8" r="4" />
@@ -165,10 +206,10 @@ export default function Hero() {
 
       {/* ── CONTENIDO PRINCIPAL ── */}
       <div
-        className="absolute inset-0 z-20 flex items-center"
+        className="absolute inset-0 z-30 flex items-center"
         style={{ paddingLeft: "clamp(32px, 5vw, 80px)", paddingTop: 80 }}
       >
-        <div style={{ maxWidth: 560 }}>
+        <div style={{ maxWidth: 540 }}>
 
           {/* Badge */}
           <div
@@ -207,7 +248,8 @@ export default function Hero() {
               fontStyle: "italic",
               lineHeight: 0.88,
               color: "#aaff00",
-              textShadow: "0 0 50px rgba(170,255,0,0.9), 0 0 100px rgba(170,255,0,0.5), 0 0 160px rgba(170,255,0,0.2)",
+              textShadow:
+                "0 0 50px rgba(170,255,0,0.9), 0 0 100px rgba(170,255,0,0.5), 0 0 160px rgba(170,255,0,0.2)",
               animation: isFullyActive ? "titleGlow 3s ease-in-out infinite alternate" : "none",
               letterSpacing: -2,
               margin: "0 0 8px",
@@ -336,7 +378,6 @@ export default function Hero() {
           <div
             style={{
               display: "flex",
-              gap: 0,
               opacity: isFullyActive ? 1 : 0,
               transform: isFullyActive ? "translateY(0)" : "translateY(20px)",
               transition: "all 0.8s ease 1.6s",
@@ -371,43 +412,36 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* ── FEATURES DERECHA ── */}
+      {/* ── FEATURES DERECHA (debajo del video) ── */}
       <div
-        className="absolute z-30"
+        className="absolute z-40"
         style={{
-          right: 24, top: "50%",
+          right: 24,
+          top: "50%",
           transform: "translateY(-50%)",
-          display: "flex", flexDirection: "column", gap: 14,
+          display: "flex",
+          flexDirection: "column",
+          gap: 12,
           opacity: isFullyActive ? 1 : 0,
           transition: "opacity 1s ease 2s",
         }}
       >
         {[
-          { title: "MÁS FUERZA",     sub: "Y POTENCIA",  icon: (
-            <svg viewBox="0 0 24 24" fill="none" stroke="#aaff00" strokeWidth={2} width={16} height={16}>
-              <path d="M12 2C8 6 6 9 6 13a6 6 0 0012 0c0-4-2-7-6-11z" />
-            </svg>
-          )},
-          { title: "HIDRATACIÓN",    sub: "SUPERIOR",    icon: (
-            <svg viewBox="0 0 24 24" fill="#aaff00" width={16} height={16}>
-              <path d="M13 2L4 14h7l-2 8 9-12h-7z" />
-            </svg>
-          )},
-          { title: "ENFOQUE MENTAL", sub: "Y ENERGÍA",   icon: (
-            <svg viewBox="0 0 24 24" fill="none" stroke="#aaff00" strokeWidth={2} width={16} height={16}>
-              <circle cx="12" cy="12" r="9" />
-              <path d="M12 8v4M12 16h.01" />
-            </svg>
-          )},
+          { title: "MÁS FUERZA",     sub: "Y POTENCIA",
+            icon: <svg viewBox="0 0 24 24" fill="none" stroke="#aaff00" strokeWidth={2} width={15} height={15}><path d="M12 2C8 6 6 9 6 13a6 6 0 0012 0c0-4-2-7-6-11z"/></svg> },
+          { title: "HIDRATACIÓN",    sub: "SUPERIOR",
+            icon: <svg viewBox="0 0 24 24" fill="#aaff00" width={15} height={15}><path d="M13 2L4 14h7l-2 8 9-12h-7z"/></svg> },
+          { title: "ENFOQUE MENTAL", sub: "Y ENERGÍA",
+            icon: <svg viewBox="0 0 24 24" fill="none" stroke="#aaff00" strokeWidth={2} width={15} height={15}><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg> },
         ].map((f) => (
           <div
             key={f.title}
             style={{
-              display: "flex", alignItems: "center", gap: 12,
-              background: "rgba(0,0,0,0.65)",
+              display: "flex", alignItems: "center", gap: 10,
+              background: "rgba(0,0,0,0.60)",
               border: "1px solid rgba(170,255,0,0.2)",
-              padding: "11px 14px", minWidth: 170,
-              backdropFilter: "blur(8px)",
+              padding: "10px 13px", minWidth: 165,
+              backdropFilter: "blur(10px)",
               transition: "all 0.3s", cursor: "default",
             }}
             onMouseEnter={(e) => {
@@ -417,11 +451,11 @@ export default function Hero() {
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.borderColor = "rgba(170,255,0,0.2)";
-              e.currentTarget.style.background = "rgba(0,0,0,0.65)";
+              e.currentTarget.style.background = "rgba(0,0,0,0.60)";
               e.currentTarget.style.transform = "translateX(0)";
             }}
           >
-            <div style={{ width: 34, height: 34, border: "1px solid rgba(170,255,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(170,255,0,0.05)", flexShrink: 0 }}>
+            <div style={{ width: 32, height: 32, border: "1px solid rgba(170,255,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(170,255,0,0.05)", flexShrink: 0 }}>
               {f.icon}
             </div>
             <div>
@@ -432,40 +466,6 @@ export default function Hero() {
         ))}
       </div>
 
-      {/* ── PRODUCTO (tarro PNG centrado/derecha) ── */}
-      <div
-        className="absolute z-20"
-        style={{
-          right: "22%",
-          top: "50%",
-          transform: isFullyActive
-            ? "translateY(-50%) scale(1)"
-            : "translateY(-40%) scale(0.85)",
-          opacity: isFullyActive ? 1 : 0,
-          transition: "all 1.2s cubic-bezier(0.22,1,0.36,1) 0.8s",
-          pointerEvents: "none",
-          animation: isFullyActive ? "float 4s ease-in-out infinite" : "none",
-        }}
-      >
-        {/* Glow detrás del tarro */}
-        <div
-          style={{
-            position: "absolute",
-            inset: "-40px",
-            background: "radial-gradient(ellipse at center, rgba(170,255,0,0.35) 0%, transparent 70%)",
-            filter: "blur(20px)",
-          }}
-        />
-        <Image
-          src="/product.png"
-          alt="Kreatonite Creatina"
-          width={320}
-          height={380}
-          style={{ objectFit: "contain", filter: "drop-shadow(0 0 40px rgba(170,255,0,0.6))", position: "relative" }}
-          onError={(e) => { e.currentTarget.style.display = "none"; }}
-        />
-      </div>
-
       {/* ── CSS ANIMATIONS ── */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&display=swap');
@@ -474,8 +474,8 @@ export default function Hero() {
           50% { opacity:.3; transform:scale(1.5); }
         }
         @keyframes titleGlow {
-          from { text-shadow: 0 0 40px rgba(170,255,0,.7), 0 0 80px rgba(170,255,0,.3); }
-          to   { text-shadow: 0 0 70px rgba(170,255,0,1), 0 0 130px rgba(170,255,0,.7), 0 0 200px rgba(170,255,0,.25); }
+          from { text-shadow: 0 0 40px rgba(170,255,0,.7),0 0 80px rgba(170,255,0,.3); }
+          to   { text-shadow: 0 0 70px rgba(170,255,0,1),0 0 130px rgba(170,255,0,.7),0 0 200px rgba(170,255,0,.25); }
         }
         @keyframes btnPulse {
           0%,100% { box-shadow: 0 0 0 0 rgba(170,255,0,.3); }
@@ -484,10 +484,6 @@ export default function Hero() {
         @keyframes pulseEnergy {
           0%,100% { opacity:.5; }
           50%     { opacity:1; }
-        }
-        @keyframes float {
-          0%,100% { transform: translateY(-50%) scale(1); }
-          50%     { transform: translateY(-53%) scale(1.01); }
         }
       `}</style>
     </section>

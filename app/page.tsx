@@ -1,3 +1,4 @@
+// Trigger redeploy - New Hero with video
 import HeroWrapper from "@/components/HeroWrapper";
 import Benefits from "@/components/Benefits";
 import Flavors from "@/components/Flavors";

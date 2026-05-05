@@ -84,18 +84,18 @@ export default function Hero() {
         }}
       />
 
-      {/* ── VIDEO TARRO (lado derecho) ── */}
+      {/* ── VIDEO TARRO (centrado-derecha) ── */}
       <div
         className="absolute z-20"
         style={{
-          right: "6%",
+          left: "50%",
           top: "50%",
           transform: isFullyActive
-            ? "translateY(-50%) scale(1)"
-            : "translateY(-42%) scale(0.88)",
+            ? "translate(-10%, -50%) scale(1)"
+            : "translate(-10%, -42%) scale(0.88)",
           opacity: isFullyActive ? 1 : 0,
           transition: "all 1.3s cubic-bezier(0.22,1,0.36,1) 0.7s",
-          width: "clamp(280px, 38vw, 560px)",
+          width: "clamp(300px, 40vw, 580px)",
           pointerEvents: "none",
         }}
       >
@@ -416,12 +416,12 @@ export default function Hero() {
       <div
         className="absolute z-40"
         style={{
-          right: 24,
+          right: 20,
           top: "50%",
           transform: "translateY(-50%)",
           display: "flex",
           flexDirection: "column",
-          gap: 12,
+          gap: 22,
           opacity: isFullyActive ? 1 : 0,
           transition: "opacity 1s ease 2s",
         }}

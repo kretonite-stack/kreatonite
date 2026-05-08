@@ -721,15 +721,19 @@ export default function Hero() {
                   }}
                 />
 
-                <Image
-                  src="/hero-product.png"
-                  alt="Kreatonite — Creatina Elite"
-                  width={620} height={620} priority
+                <video
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
                   style={{ 
                     width: "100%", maxWidth: "620px", height: "auto",
                     filter: "drop-shadow(0 20px 50px rgba(0,0,0,0.8))"
                   }}
-                />
+                >
+                  <source src="/tarro.mp4" type="video/mp4" />
+                </video>
+
 
                 {/* Layer 1: Product badge (Pops out) */}
                 <div style={{

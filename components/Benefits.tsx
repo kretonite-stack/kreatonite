@@ -43,7 +43,7 @@ export default function Benefits() {
       id="beneficios"
       style={{
         padding: "var(--section-pad)",
-        background: "#000",
+        background: "transparent",
         position: "relative",
         overflow: "hidden",
       }}

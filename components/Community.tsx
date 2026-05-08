@@ -18,7 +18,7 @@ export default function Community() {
       id="comunidad"
       style={{
         padding: "var(--section-pad)",
-        background: "#000",
+        background: "transparent",
         position: "relative",
         overflow: "hidden",
       }}

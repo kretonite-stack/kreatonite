@@ -9,7 +9,13 @@ import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <main>
+    <main style={{
+      backgroundImage: "linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/hero-bg-thunder.png')",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundAttachment: "fixed",
+      minHeight: "100vh",
+    }}>
       <HeroWrapper />
       <Benefits />
       <Flavors />
@@ -18,5 +24,6 @@ export default function Home() {
       <Community />
       <Footer />
     </main>
+
   );
 }

@@ -45,7 +45,7 @@ export default function Flavors() {
       id="sabores"
       style={{
         padding: "var(--section-pad)",
-        background: "var(--dark-1)",
+        background: "transparent",
         position: "relative",
         overflow: "hidden",
       }}

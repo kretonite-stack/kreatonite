@@ -443,10 +443,7 @@ export default function Hero() {
           minHeight: "calc(100vh - 68px)",
           display: "flex",
           alignItems: "center",
-          background: `
-            linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 20%, transparent 80%, #000 100%),
-            url('/hero-bg-thunder.png') center/cover no-repeat
-          `,
+          background: "transparent",
 
         }}
       >

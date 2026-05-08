@@ -1,0 +1,818 @@
+"use client";
+
+import Image from "next/image";
+import { Zap, Dumbbell, Droplets, Brain, ChevronDown } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+
+const FEATURES = [
+  { Icon: Dumbbell, label: "MÁS FUERZA", sub: "Y POTENCIA" },
+  { Icon: Droplets, label: "HIDRATACIÓN", sub: "SUPERIOR" },
+  { Icon: Brain, label: "ENFOQUE MENTAL", sub: "Y ENERGÍA" },
+];
+
+const STATS = [
+  { value: 10000, suffix: "+", label: "ATLETAS" },
+  { value: 4.9, suffix: "★", label: "RATING", decimal: true },
+  { value: 30, suffix: "", label: "PORCIONES" },
+  { value: 3, suffix: "EN1", label: "FÓRMULA" },
+];
+
+/* ── Animated counter ── */
+function Counter({ value, suffix, decimal }: { value: number; suffix: string; decimal?: boolean }) {
+  const [display, setDisplay] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const started = useRef(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started.current) {
+          started.current = true;
+          const duration = 1800;
+          const start = performance.now();
+          const animate = (now: number) => {
+            const t = Math.min((now - start) / duration, 1);
+            const ease = 1 - Math.pow(1 - t, 3);
+            setDisplay(decimal ? Math.round(ease * value * 10) / 10 : Math.floor(ease * value));
+            if (t < 1) requestAnimationFrame(animate);
+            else setDisplay(value);
+          };
+          requestAnimationFrame(animate);
+        }
+      },
+      { threshold: 0.5 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [value, decimal]);
+
+  return (
+    <span ref={ref}>
+      {decimal ? display.toFixed(1) : display >= 1000 ? (display / 1000).toFixed(0) + "K" : display}
+      {suffix}
+    </span>
+  );
+}
+
+/* ══════════════════════════════════════════
+   EPIC THUNDER SYSTEM — God of War Level
+   ══════════════════════════════════════════ */
+function EpicThunderCanvas({
+  titleRef,
+  productRef,
+}: {
+  titleRef: React.RefObject<HTMLHeadingElement | null>;
+  productRef: React.RefObject<HTMLDivElement | null>;
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let w = 0, h = 0;
+    let time = 0;
+
+    const resize = () => {
+      w = canvas.width = canvas.offsetWidth;
+      h = canvas.height = canvas.offsetHeight;
+    };
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
+
+    // Mouse 3D tilt & Advanced Parallax
+    const handleMouse = (e: MouseEvent) => {
+      if (!productRef.current) return;
+      const rect = productRef.current.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      
+      // Normalized movement (-1 to 1)
+      const dx = (e.clientX - cx) / (rect.width / 2);
+      const dy = (e.clientY - cy) / (rect.height / 2);
+
+      // 1. Tilt main container (Immersive rotation)
+      const rx = dy * -22; // rotateX
+      const ry = dx * 22;  // rotateY
+      productRef.current.style.transform = `perspective(2000px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.06)`;
+
+      // 2. Glare effect (Dynamic Light)
+      const glare = document.getElementById("product-glare");
+      if (glare) {
+        glare.style.opacity = "1";
+        glare.style.background = `radial-gradient(circle at ${50 + dx * 30}% ${50 + dy * 30}%, rgba(255,255,255,0.18) 0%, transparent 60%)`;
+      }
+
+      // 3. Multilayer Parallax (Background elements)
+      const layers = document.querySelectorAll(".parallax-layer");
+      layers.forEach((layer) => {
+        const depth = parseFloat((layer as HTMLElement).dataset.depth || "0");
+        const moveX = dx * depth * 40;
+        const moveY = dy * depth * 40;
+        (layer as HTMLElement).style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
+      });
+    };
+
+    const handleLeave = () => {
+      if (productRef.current) {
+        productRef.current.style.transform = `perspective(2000px) rotateX(0deg) rotateY(0deg) scale(1)`;
+      }
+      const glare = document.getElementById("product-glare");
+      if (glare) glare.style.opacity = "0";
+
+      const layers = document.querySelectorAll(".parallax-layer");
+      layers.forEach((layer) => {
+        (layer as HTMLElement).style.transform = `translate3d(0, 0, 0)`;
+      });
+    };
+    window.addEventListener("mousemove", handleMouse);
+    window.addEventListener("mouseleave", handleLeave);
+
+    // Particles pool
+    type Particle = { x: number; y: number; vx: number; vy: number; life: number; maxLife: number; size: number; type: "ember" | "ring" | "streak" };
+    const particles: Particle[] = [];
+
+    const spawnParticles = (px: number, py: number) => {
+      for (let i = 0; i < 3; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 2.5 + 0.5;
+        particles.push({
+          x: px + (Math.random() - 0.5) * 120,
+          y: py + 80 + Math.random() * 60,
+          vx: Math.cos(angle) * speed * 0.4,
+          vy: -speed - Math.random() * 1.5,
+          life: 1, maxLife: 1,
+          size: Math.random() * 3 + 1,
+          type: "ember",
+        });
+      }
+      // Ring pulse
+      if (Math.random() > 0.85) {
+        particles.push({
+          x: px, y: py + 100,
+          vx: 0, vy: 0,
+          life: 1, maxLife: 1,
+          size: 10,
+          type: "ring",
+        });
+      }
+    };
+
+    // Draw fractal lightning bolt
+    const drawFractalBolt = (
+      x1: number, y1: number, x2: number, y2: number,
+      depth: number, opacity: number, color: string
+    ) => {
+      if (depth === 0 || opacity < 0.05) return;
+      const mx = (x1 + x2) / 2 + (Math.random() - 0.5) * 60 * depth;
+      const my = (y1 + y2) / 2 + (Math.random() - 0.5) * 20 * depth;
+
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.quadraticCurveTo(mx, my, x2, y2);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = depth * 1.2;
+      ctx.shadowBlur = depth * 12;
+      ctx.shadowColor = "#a3e635";
+      ctx.globalAlpha = opacity;
+      ctx.stroke();
+
+      // Branch
+      if (depth > 1 && Math.random() > 0.5) {
+        const bx = mx + (Math.random() - 0.5) * 120;
+        const by = my + Math.random() * 100;
+        drawFractalBolt(mx, my, bx, by, depth - 1, opacity * 0.6, "rgba(200,255,0,0.7)");
+      }
+
+      drawFractalBolt(x1, y1, mx, my, depth - 1, opacity * 0.7, color);
+      drawFractalBolt(mx, my, x2, y2, depth - 1, opacity * 0.7, color);
+    };
+
+    // Lightning strike system
+    let strikeTimer = 0;
+    let strikeInterval = 80 + Math.random() * 120;
+    let titleFlash = 0;
+    let productFlash = 0;
+
+    // Ambient arc system
+    type Arc = { x1: number; y1: number; x2: number; y2: number; life: number; opacity: number };
+    const arcs: Arc[] = [];
+
+    const loop = () => {
+      ctx.clearRect(0, 0, w, h);
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
+      time++;
+
+      // ── Ambient electric field around product ──
+      if (productRef.current) {
+        const rect = productRef.current.getBoundingClientRect();
+        const root = canvas.getBoundingClientRect();
+        const px = rect.left - root.left + rect.width / 2;
+        const py = rect.top - root.top + rect.height / 2;
+
+        // Spawn ambient arcs
+        if (Math.random() > 0.6) {
+          const a1 = Math.random() * Math.PI * 2;
+          const a2 = a1 + (Math.random() - 0.5) * 1.5;
+          const r = 160 + Math.random() * 60;
+          arcs.push({
+            x1: px + Math.cos(a1) * r,
+            y1: py + Math.sin(a1) * r * 0.6,
+            x2: px + Math.cos(a2) * (r - 30),
+            y2: py + Math.sin(a2) * (r - 30) * 0.6,
+            life: 0.8 + Math.random() * 0.4,
+            opacity: 0.5 + Math.random() * 0.5,
+          });
+        }
+
+        // Draw & update arcs
+        for (let i = arcs.length - 1; i >= 0; i--) {
+          const arc = arcs[i];
+          arc.life -= 0.08;
+          if (arc.life <= 0) { arcs.splice(i, 1); continue; }
+
+          const pts: [number, number][] = [[arc.x1, arc.y1]];
+          const segs = 6;
+          for (let s = 1; s < segs; s++) {
+            const t = s / segs;
+            pts.push([
+              arc.x1 + (arc.x2 - arc.x1) * t + (Math.random() - 0.5) * 20,
+              arc.y1 + (arc.y2 - arc.y1) * t + (Math.random() - 0.5) * 12,
+            ]);
+          }
+          pts.push([arc.x2, arc.y2]);
+
+          ctx.beginPath();
+          ctx.moveTo(pts[0][0], pts[0][1]);
+          for (let s = 1; s < pts.length; s++) ctx.lineTo(pts[s][0], pts[s][1]);
+
+          ctx.strokeStyle = `rgba(163,230,53,${arc.opacity * arc.life})`;
+          ctx.lineWidth = 1.5;
+          ctx.shadowBlur = 12;
+          ctx.shadowColor = "#a3e635";
+          ctx.globalAlpha = arc.life;
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+          ctx.shadowBlur = 0;
+        }
+
+        spawnParticles(px, py);
+
+        // Product glow pulse
+        if (productFlash > 0) {
+          productRef.current.style.filter = `drop-shadow(0 0 ${40 + productFlash * 80}px rgba(163,230,53,${0.6 + productFlash * 0.4})) drop-shadow(0 0 ${20 + productFlash * 30}px rgba(200,255,0,0.8)) brightness(${1 + productFlash * 0.4})`;
+          productFlash *= 0.88;
+        } else {
+          productRef.current.style.filter = `drop-shadow(0 0 40px rgba(163,230,53,0.4)) drop-shadow(0 0 80px rgba(163,230,53,0.15))`;
+        }
+      }
+
+      // ── Title flash ──
+      if (titleFlash > 0 && titleRef.current) {
+        titleRef.current.style.textShadow = `
+          0 0 ${20 + titleFlash * 60}px rgba(200,255,0,1),
+          0 0 ${50 + titleFlash * 120}px rgba(163,230,53,0.8),
+          0 0 ${100 + titleFlash * 200}px rgba(163,230,53,0.4)
+        `;
+        titleFlash *= 0.9;
+      }
+
+      // ── Lightning strikes ──
+      strikeTimer++;
+      if (strikeTimer >= strikeInterval) {
+        strikeTimer = 0;
+        strikeInterval = 80 + Math.random() * 140;
+
+        const target = Math.random() > 0.45 ? "product" : "title";
+        let tx = w * 0.5, ty = h * 0.5;
+
+        if (target === "product" && productRef.current) {
+          const rect = productRef.current.getBoundingClientRect();
+          const root = canvas.getBoundingClientRect();
+          tx = rect.left - root.left + Math.random() * rect.width;
+          ty = rect.top - root.top + Math.random() * rect.height * 0.7;
+          productFlash = 1;
+        } else if (titleRef.current) {
+          const rect = titleRef.current.getBoundingClientRect();
+          const root = canvas.getBoundingClientRect();
+          tx = rect.left - root.left + Math.random() * rect.width;
+          ty = rect.top - root.top + Math.random() * rect.height;
+          titleFlash = 1;
+        }
+
+        // Multi-origin strikes
+        const origins = Math.floor(Math.random() * 2) + 1;
+        for (let o = 0; o < origins; o++) {
+          const sx = (Math.random() * 0.8 + 0.1) * w;
+          ctx.globalAlpha = 1;
+          drawFractalBolt(sx, -20, tx, ty, 4, 0.9, "rgba(163,230,53,0.9)");
+
+          // White core
+          ctx.beginPath();
+          ctx.moveTo(sx, -20);
+          ctx.lineTo(tx + (Math.random() - 0.5) * 10, ty);
+          ctx.strokeStyle = "rgba(255,255,255,0.7)";
+          ctx.lineWidth = 0.8;
+          ctx.shadowBlur = 20;
+          ctx.shadowColor = "#fff";
+          ctx.globalAlpha = 0.6;
+          ctx.stroke();
+        }
+
+        ctx.globalAlpha = 1;
+        ctx.shadowBlur = 0;
+      }
+
+      // ── Particles ──
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.04;
+        p.life -= 0.016;
+        if (p.life <= 0) { particles.splice(i, 1); continue; }
+
+        if (p.type === "ring") {
+          p.size += 4;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(163,230,53,${p.life * 0.4})`;
+          ctx.lineWidth = 1;
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = "#a3e635";
+          ctx.globalAlpha = p.life;
+          ctx.stroke();
+        } else {
+          ctx.fillStyle = `rgba(${p.life > 0.5 ? "200,255,0" : "163,230,53"},${p.life})`;
+          ctx.shadowBlur = 6;
+          ctx.shadowColor = "#a3e635";
+          ctx.globalAlpha = p.life;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+        ctx.shadowBlur = 0;
+      }
+
+      // ── Ambient scan line ──
+      const scanY = ((time * 0.4) % (h + 100)) - 50;
+      const scanGrad = ctx.createLinearGradient(0, scanY - 2, 0, scanY + 2);
+      scanGrad.addColorStop(0, "transparent");
+      scanGrad.addColorStop(0.5, "rgba(163,230,53,0.04)");
+      scanGrad.addColorStop(1, "transparent");
+      ctx.fillStyle = scanGrad;
+      ctx.globalAlpha = 1;
+      ctx.fillRect(0, scanY - 2, w, 4);
+
+      animId = requestAnimationFrame(loop);
+    };
+    loop();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      ro.disconnect();
+      window.removeEventListener("mousemove", handleMouse);
+      window.removeEventListener("mouseleave", handleLeave);
+    };
+  }, [titleRef, productRef]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 4 }}
+    />
+  );
+}
+
+/* ══════════════════════════════════════════
+   INTRO CINEMATIC OVERLAY
+   ══════════════════════════════════════════ */
+function CinematicIntro({ onDone }: { onDone: () => void }) {
+  const [phase, setPhase] = useState<"black" | "flash" | "done">("black");
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setPhase("flash"), 300);
+    const t2 = setTimeout(() => setPhase("done"), 900);
+    const t3 = setTimeout(onDone, 950);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+  }, [onDone]);
+
+  if (phase === "done") return null;
+
+  return (
+    <div style={{
+      position: "fixed", inset: 0, zIndex: 9999,
+      background: phase === "flash" ? "rgba(163,230,53,0.15)" : "#000",
+      transition: phase === "flash" ? "background 0.3s ease" : "none",
+      pointerEvents: "none",
+    }} />
+  );
+}
+
+/* ══════════════════════════════════════════
+   MAIN HERO
+   ══════════════════════════════════════════ */
+export default function Hero() {
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const productRef = useRef<HTMLDivElement>(null);
+  const [introDone, setIntroDone] = useState(false);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (introDone) {
+      const t = setTimeout(() => setVisible(true), 50);
+      return () => clearTimeout(t);
+    }
+  }, [introDone]);
+
+  return (
+    <>
+      <CinematicIntro onDone={() => setIntroDone(true)} />
+
+      <section
+        id="inicio"
+        style={{
+          position: "relative",
+          overflow: "hidden",
+          minHeight: "calc(100vh - 68px)",
+          display: "flex",
+          alignItems: "center",
+          background: `
+            linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 20%, transparent 80%, #000 100%),
+            url('/hero-bg-thunder.png') center/cover no-repeat
+          `,
+
+        }}
+      >
+        {/* Vignette */}
+        <div style={{
+          position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none",
+          background: "radial-gradient(ellipse 100% 100% at 50% 50%, transparent 40%, rgba(0,0,0,0.7) 100%)",
+        }} />
+
+
+        <EpicThunderCanvas titleRef={titleRef} productRef={productRef} />
+
+        <div className="container" style={{ padding: "64px 24px 80px", position: "relative", zIndex: 3 }}>
+          <div className="hero-layout">
+
+            {/* ── LEFT ── */}
+            <div
+              className="hero-left"
+              style={{
+                opacity: visible ? 1 : 0,
+                transform: visible ? "translateY(0)" : "translateY(40px)",
+                transition: "opacity 0.9s cubic-bezier(0.23,1,0.32,1), transform 0.9s cubic-bezier(0.23,1,0.32,1)",
+              }}
+            >
+              {/* Section label */}
+              <div
+                className="section-label"
+                style={{
+                  marginBottom: "20px",
+                  opacity: visible ? 1 : 0,
+                  transform: visible ? "translateX(0)" : "translateX(-20px)",
+                  transition: "opacity 0.7s 0.1s ease, transform 0.7s 0.1s ease",
+                }}
+              >
+                <Zap size={12} fill="var(--neon)" color="var(--neon)" />
+                SUPLEMENTO DE ÉLITE
+              </div>
+
+              {/* Main title */}
+              <h1
+                ref={titleRef}
+                className="neon-text-xl"
+                style={{
+                  fontFamily: "var(--font-d)",
+                  fontSize: "clamp(68px, 11vw, 148px)",
+                  fontWeight: 400,
+                  lineHeight: 0.85,
+                  letterSpacing: "2px",
+                  textTransform: "uppercase",
+                  marginBottom: "2px",
+                  transition: "text-shadow 0.1s ease, filter 0.1s ease",
+                  opacity: visible ? 1 : 0,
+                  transform: visible ? "translateX(0) skewX(0deg)" : "translateX(-30px) skewX(-2deg)",
+                  transitionProperty: "opacity, transform, text-shadow",
+                  transitionDuration: "1s, 1s, 0.1s",
+                  transitionDelay: "0.15s, 0.15s, 0s",
+                  transitionTimingFunction: "cubic-bezier(0.23,1,0.32,1), cubic-bezier(0.23,1,0.32,1), ease",
+                }}
+              >
+                KREATONITE
+              </h1>
+
+              {/* Subtitle */}
+              <h2
+                style={{
+                  fontFamily: "var(--font-c)",
+                  fontSize: "clamp(22px, 3.8vw, 52px)",
+                  fontWeight: 900,
+                  color: "#fff",
+                  fontStyle: "italic",
+                  letterSpacing: "8px",
+                  textTransform: "uppercase",
+                  lineHeight: 1,
+                  marginBottom: "12px",
+                  textShadow: "0 8px 32px rgba(0,0,0,0.6)",
+                  opacity: visible ? 1 : 0,
+                  transform: visible ? "translateX(0)" : "translateX(-20px)",
+                  transition: "opacity 0.8s 0.3s ease, transform 0.8s 0.3s ease",
+                }}
+              >
+                THE GAME CHANGER
+              </h2>
+
+              {/* Formula tag */}
+              <div style={{
+                display: "flex", alignItems: "center", gap: "8px",
+                marginBottom: "28px",
+                opacity: visible ? 1 : 0,
+                transform: visible ? "translateY(0)" : "translateY(10px)",
+                transition: "opacity 0.7s 0.4s ease, transform 0.7s 0.4s ease",
+              }}>
+                <div style={{
+                  height: "2px", width: "40px",
+                  background: "linear-gradient(90deg, transparent, var(--neon))",
+                }} />
+                <span style={{
+                  fontFamily: "var(--font-d)", fontSize: "13px",
+                  color: "var(--neon)", letterSpacing: "3px",
+                }}>
+                  3 EN 1 REAL
+                </span>
+                <span style={{ color: "var(--gray-3)", fontSize: "12px", letterSpacing: "1px" }}>
+                  CREATINA + ELECTROLITOS + VITAMINA B12
+                </span>
+              </div>
+
+              {/* Descriptor */}
+              <p style={{
+                color: "var(--gray-1)", fontSize: "15px",
+                lineHeight: 1.7, maxWidth: "400px",
+                marginBottom: "36px",
+                opacity: visible ? 1 : 0,
+                transition: "opacity 0.7s 0.45s ease",
+              }}>
+                Energía limpia, fuerza explosiva y enfoque mental en una sola toma.
+                Diseñado para quienes entrenan en serio.
+              </p>
+
+              {/* CTAs */}
+              <div style={{
+                display: "flex", gap: "14px", flexWrap: "wrap",
+                marginBottom: "44px",
+                opacity: visible ? 1 : 0,
+                transform: visible ? "translateY(0)" : "translateY(16px)",
+                transition: "opacity 0.7s 0.5s ease, transform 0.7s 0.5s ease",
+              }}>
+                <a href="#sabores" className="btn-neon anim-btn" style={{ fontSize: "15px", padding: "16px 36px" }}>
+                  <Zap size={18} fill="#000" color="#000" />
+                  COMPRAR AHORA
+                </a>
+                <a href="#beneficios" className="btn-ghost" style={{ fontSize: "15px", padding: "16px 32px" }}>
+                  VER BENEFICIOS
+                </a>
+              </div>
+
+              {/* Features bar */}
+              <div style={{
+                display: "flex", gap: "0",
+                border: "1px solid rgba(163,230,53,0.15)",
+                borderRadius: "6px",
+                overflow: "hidden",
+                backdropFilter: "blur(12px)",
+                background: "rgba(0,0,0,0.4)",
+                opacity: visible ? 1 : 0,
+                transform: visible ? "translateY(0)" : "translateY(16px)",
+                transition: "opacity 0.7s 0.6s ease, transform 0.7s 0.6s ease",
+              }}>
+                {FEATURES.map(({ Icon, label, sub }, i) => (
+                  <div
+                    key={label}
+                    style={{
+                      flex: 1, display: "flex", alignItems: "center",
+                      gap: "10px", padding: "16px 14px",
+                      borderRight: i < FEATURES.length - 1 ? "1px solid rgba(163,230,53,0.1)" : "none",
+                      background: "rgba(163,230,53,0.02)",
+                      transition: "background 0.25s ease",
+                      cursor: "default",
+                    }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(163,230,53,0.06)"; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(163,230,53,0.02)"; }}
+                  >
+                    <div className="icon-circle" style={{ width: "38px", height: "38px", flexShrink: 0 }}>
+                      <Icon size={16} color="var(--neon)" strokeWidth={1.5} />
+                    </div>
+                    <div>
+                      <div style={{ fontFamily: "var(--font-d)", fontSize: "13px", color: "#fff", lineHeight: 1.1 }}>{label}</div>
+                      <div style={{ fontSize: "9px", color: "var(--neon)", letterSpacing: "1px" }}>{sub}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Stats row */}
+              <div style={{
+                display: "flex", gap: "32px", flexWrap: "wrap",
+                marginTop: "28px", paddingTop: "24px",
+                borderTop: "1px solid rgba(163,230,53,0.08)",
+                opacity: visible ? 1 : 0,
+                transition: "opacity 0.7s 0.75s ease",
+              }}>
+                {STATS.map(({ value, suffix, label, decimal }) => (
+                  <div key={label} style={{ textAlign: "center" }}>
+                    <div style={{
+                      fontFamily: "var(--font-d)",
+                      fontSize: "clamp(22px, 2.5vw, 30px)",
+                      color: "var(--neon-bright)",
+                      lineHeight: 1,
+                      textShadow: "0 0 20px rgba(200,255,0,0.5)",
+                    }}>
+                      <Counter value={value} suffix={suffix} decimal={decimal} />
+                    </div>
+                    <div style={{
+                      fontFamily: "var(--font-d)", fontSize: "9px",
+                      color: "var(--gray-2)", letterSpacing: "2.5px",
+                      marginTop: "3px",
+                    }}>
+                      {label}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── RIGHT — Product ── */}
+            <div className="hero-right" style={{ perspective: "2000px", transformStyle: "preserve-3d" }}>
+              
+              {/* Layer -3: Background Glow (Slow movement) */}
+              <div 
+                data-depth="-0.1"
+                className="parallax-layer"
+                style={{
+                  position: "absolute",
+                  width: "700px", height: "700px",
+                  borderRadius: "50%",
+                  background: "radial-gradient(circle, rgba(163,230,53,0.1) 0%, transparent 70%)",
+                  animation: "glow-pulse 4s ease-in-out infinite",
+                  pointerEvents: "none", zIndex: 0,
+                  filter: "blur(40px)"
+                }} 
+              />
+
+              {/* Layer -2: Electric ring border */}
+              <div 
+                data-depth="0.05"
+                className="parallax-layer"
+                style={{
+                  position: "absolute",
+                  width: "520px", height: "520px",
+                  borderRadius: "50%",
+                  border: "1px solid rgba(163,230,53,0.15)",
+                  animation: "electric-border 3s ease-in-out infinite",
+                  pointerEvents: "none", zIndex: 0,
+                }} 
+              />
+
+              {/* Layer -1: Inner ring */}
+              <div 
+                data-depth="0.1"
+                className="parallax-layer"
+                style={{
+                  position: "absolute",
+                  width: "420px", height: "420px",
+                  borderRadius: "50%",
+                  border: "1px solid rgba(163,230,53,0.1)",
+                  animation: "electric-border 3s ease-in-out infinite",
+                  animationDelay: "1s",
+                  pointerEvents: "none", zIndex: 0,
+                }} 
+              />
+
+              {/* Layer 0: Main Product Stage */}
+              <div
+                ref={productRef}
+                className="product-3d-stage"
+                style={{
+                  position: "relative", 
+                  zIndex: 5,
+                  transformStyle: "preserve-3d",
+                  cursor: "pointer",
+                  opacity: visible ? 1 : 0,
+                  transform: visible ? "scale(1)" : "scale(0.9)",
+                  transition: "opacity 1s 0.2s ease, transform 0.1s ease-out",
+                }}
+              >
+                {/* Glare/Reflection Overlay */}
+                <div 
+                  id="product-glare"
+                  style={{
+                    position: "absolute", inset: 0,
+                    zIndex: 10, pointerEvents: "none",
+                    background: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.12) 0%, transparent 60%)",
+                    mixBlendMode: "overlay",
+                    opacity: 0, transition: "opacity 0.3s ease",
+                    borderRadius: "20%"
+                  }}
+                />
+
+                <Image
+                  src="/hero-product.png"
+                  alt="Kreatonite — Creatina Elite"
+                  width={620} height={620} priority
+                  style={{ 
+                    width: "100%", maxWidth: "620px", height: "auto",
+                    filter: "drop-shadow(0 20px 50px rgba(0,0,0,0.8))"
+                  }}
+                />
+
+                {/* Layer 1: Product badge (Pops out) */}
+                <div style={{
+                  position: "absolute", bottom: "-15px", left: "50%",
+                  transform: "translateX(-50%) translateZ(60px)",
+                  background: "rgba(0,0,0,0.95)",
+                  border: "1px solid var(--neon)",
+                  padding: "10px 28px", borderRadius: "2px",
+                  fontFamily: "var(--font-d)", fontSize: "14px",
+                  color: "var(--neon)", whiteSpace: "nowrap",
+                  boxShadow: "0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(163,230,53,0.3)",
+                  letterSpacing: "2.5px",
+                  animation: "neon-btn-pulse 2.5s ease-in-out infinite",
+                  zIndex: 15
+                }}>
+                  ⚡ TECNOLOGÍA DE ABSORCIÓN MÁXIMA
+                </div>
+
+                {/* Layer 2: Floating formula badge (Extreme pop out) */}
+                <div style={{
+                  position: "absolute", top: "15%", right: "-30px",
+                  transform: "translateZ(100px)",
+                  background: "rgba(163,230,53,0.1)",
+                  backdropFilter: "blur(12px)",
+                  border: "1px solid rgba(163,230,53,0.5)",
+                  borderRadius: "8px", padding: "12px 16px",
+                  animation: "float 4s ease-in-out infinite",
+                  boxShadow: "0 15px 35px rgba(0,0,0,0.4), 0 0 25px rgba(163,230,53,0.2)",
+                  zIndex: 20,
+                }}>
+                  <div style={{ fontFamily: "var(--font-d)", fontSize: "28px", color: "var(--neon-bright)", lineHeight: 1, textShadow: "0 0 15px rgba(200,255,0,0.7)" }}>3</div>
+                  <div style={{ fontFamily: "var(--font-d)", fontSize: "10px", color: "#fff", letterSpacing: "2px", fontWeight: 700 }}>EN 1</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Scroll indicator */}
+        <div style={{
+          position: "absolute", bottom: "24px", left: "50%",
+          transform: "translateX(-50%)",
+          display: "flex", flexDirection: "column",
+          alignItems: "center", gap: "6px",
+          opacity: visible ? 0.6 : 0,
+          transition: "opacity 1s 1.2s ease",
+          zIndex: 5,
+          cursor: "pointer",
+        }}
+          onClick={() => document.getElementById("beneficios")?.scrollIntoView({ behavior: "smooth" })}
+        >
+          <span style={{ fontFamily: "var(--font-d)", fontSize: "9px", color: "var(--neon)", letterSpacing: "3px" }}>SCROLL</span>
+          <ChevronDown size={16} color="var(--neon)" style={{ animation: "float 2s ease-in-out infinite" }} />
+        </div>
+
+        <style>{`
+          .hero-layout {
+            display: grid;
+            grid-template-columns: 1.05fr 1fr;
+            gap: 40px;
+            align-items: center;
+            width: 100%;
+          }
+          .hero-right {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+          }
+          @media (max-width: 960px) {
+            .hero-layout { grid-template-columns: 1fr; }
+            .hero-left { text-align: center; }
+            .hero-left .section-label { margin-left: auto; margin-right: auto; }
+            .hero-right { margin-top: 32px; order: -1; }
+          }
+          @media (max-width: 480px) {
+            .hero-layout { gap: 24px; }
+          }
+        `}</style>
+      </section>
+    </>
+  );
+}

@@ -84,30 +84,24 @@ function EpicThunderCanvas({
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
 
-    // Mouse 3D tilt & Advanced Parallax
+    // Mouse interaction (Only lightning/glare, no tilt)
     const handleMouse = (e: MouseEvent) => {
       if (!productRef.current) return;
       const rect = productRef.current.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
       const cy = rect.top + rect.height / 2;
       
-      // Normalized movement (-1 to 1)
       const dx = (e.clientX - cx) / (rect.width / 2);
       const dy = (e.clientY - cy) / (rect.height / 2);
 
-      // 1. Tilt main container (Immersive rotation)
-      const rx = dy * -22; // rotateX
-      const ry = dx * 22;  // rotateY
-      productRef.current.style.transform = `perspective(2000px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.06)`;
-
-      // 2. Glare effect (Dynamic Light)
+      // 1. Glare effect (Dynamic Light)
       const glare = document.getElementById("product-glare");
       if (glare) {
         glare.style.opacity = "1";
         glare.style.background = `radial-gradient(circle at ${50 + dx * 30}% ${50 + dy * 30}%, rgba(255,255,255,0.18) 0%, transparent 60%)`;
       }
 
-      // 3. Multilayer Parallax (Background elements)
+      // 2. Multilayer Parallax (Background elements only)
       const layers = document.querySelectorAll(".parallax-layer");
       layers.forEach((layer) => {
         const depth = parseFloat((layer as HTMLElement).dataset.depth || "0");
@@ -118,9 +112,6 @@ function EpicThunderCanvas({
     };
 
     const handleLeave = () => {
-      if (productRef.current) {
-        productRef.current.style.transform = `perspective(2000px) rotateX(0deg) rotateY(0deg) scale(1)`;
-      }
       const glare = document.getElementById("product-glare");
       if (glare) glare.style.opacity = "0";
 

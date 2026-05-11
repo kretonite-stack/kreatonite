@@ -9,6 +9,7 @@ export default function PublicLayout({
   return (
     <div 
       className="flex flex-col min-h-screen"
+      // Force Rebuild v3 - Cleaning duplicates
       style={{
         backgroundImage: "linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url('/fondo.png')",
         backgroundSize: "cover",

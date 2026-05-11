@@ -1,10 +1,42 @@
 "use client";
 
-import { Zap } from "lucide-react";
-import { products } from "@/lib/products";
+import { useEffect, useState } from "react";
+import { Zap, Loader2 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 import ProductCard from "./ProductCard";
 
 export default function ProductsSection() {
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: false });
+      
+      if (!error && data) {
+        // Mapear datos de BD al formato del componente
+        const mapped = data.map(p => ({
+          id: p.id,
+          name: p.name,
+          flavor: p.flavor,
+          price: p.price,
+          formattedPrice: `$${p.price.toLocaleString()}`,
+          description: p.description,
+          image: p.image_url || "/images/products/kreatonite-limon.jfif",
+          accentColor: p.accent_color || "lime",
+          content: "300g", // Valores por defecto si no están en BD
+          creatinePerServing: "4.5g"
+        }));
+        setProducts(mapped);
+      }
+      setLoading(false);
+    }
+    fetchProducts();
+  }, []);
+
   const handleAddToCart = (product: any) => {
     // Placeholder para futura lógica de carrito
     console.log("Añadido al carrito:", product.name);
@@ -41,13 +73,24 @@ export default function ProductsSection() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product) => (
-            <ProductCard 
-              key={product.id} 
-              product={product} 
-              onAddToCart={handleAddToCart}
-            />
-          ))}
+          {loading ? (
+            <div className="col-span-full py-20 text-center">
+              <Loader2 className="animate-spin text-[#a3e635] mx-auto" size={48} />
+              <p className="mt-4 text-gray-500 uppercase tracking-widest text-xs">Sincronizando catálogo...</p>
+            </div>
+          ) : products.length === 0 ? (
+            <div className="col-span-full py-20 text-center border border-dashed border-white/10 rounded-3xl">
+              <p className="text-gray-500 uppercase tracking-widest text-xs">No hay productos disponibles por ahora</p>
+            </div>
+          ) : (
+            products.map((product) => (
+              <ProductCard 
+                key={product.id} 
+                product={product} 
+                onAddToCart={handleAddToCart}
+              />
+            ))
+          )}
         </div>
 
         <div className="mt-20 p-10 bg-gradient-to-r from-[#111] to-black border border-[#a3e635]/10 rounded-[40px] text-center space-y-6">

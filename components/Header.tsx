@@ -4,11 +4,10 @@ import { useState, useEffect } from "react";
 import { ShoppingCart, User, Menu, X, Zap } from "lucide-react";
 
 const NAV = [
-  { label: "INICIO", href: "#inicio" },
-  { label: "TIENDA", href: "#sabores" },
-  { label: "BENEFICIOS", href: "#beneficios" },
-  { label: "SOBRE NOSOTROS", href: "#comparacion" },
-  { label: "CONTACTO", href: "#contacto" },
+  { label: "INICIO", href: "/" },
+  { label: "PRODUCTOS", href: "/productos" },
+  { label: "BENEFICIOS", href: "/beneficios" },
+  { label: "RETIRO / DESPACHO", href: "/centros-retiro" },
 ];
 
 export default function Header() {
@@ -147,11 +146,12 @@ export default function Header() {
           {/* Right icons */}
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <a
-              href="#contacto"
+              href="/acceso-cliente"
+              title="Acceso Cliente"
               style={{
                 color: "var(--gray-1)",
                 display: "flex",
-                transition: "color 0.25s",
+                transition: "all 0.25s",
                 padding: "8px",
                 borderRadius: "6px",
                 border: "1px solid transparent",
@@ -173,7 +173,35 @@ export default function Header() {
             </a>
 
             <a
-              href="#sabores"
+              href="/acceso-colaboradores"
+              title="Acceso Colaboradores"
+              style={{
+                color: "var(--gray-1)",
+                display: "flex",
+                transition: "all 0.25s",
+                padding: "8px",
+                borderRadius: "6px",
+                border: "1px solid transparent",
+              }}
+              onMouseEnter={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.color = "var(--neon)";
+                el.style.borderColor = "rgba(163,230,53,0.3)";
+                el.style.background = "rgba(163,230,53,0.06)";
+              }}
+              onMouseLeave={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.color = "var(--gray-1)";
+                el.style.borderColor = "transparent";
+                el.style.background = "transparent";
+              }}
+            >
+              <Zap size={18} />
+            </a>
+
+            <a
+              href="/checkout"
+              title="Carrito"
               style={{
                 color: "#000",
                 display: "flex",

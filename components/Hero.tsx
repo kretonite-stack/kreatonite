@@ -428,6 +428,7 @@ export default function Hero() {
 
       <section
         id="inicio"
+        className="kreatonite-hero-bg"
         style={{
           position: "relative",
           overflow: "hidden",

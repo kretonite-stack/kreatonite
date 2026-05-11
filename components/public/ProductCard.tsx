@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Zap, ShoppingCart, Eye } from "lucide-react";
 import { Product } from "@/lib/products";
+import { useCart } from "@/context/CartContext";
 
 interface ProductCardProps {
   product: Product;
@@ -10,6 +11,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
+  const { addToCart } = useCart();
   const accentColors = {
     lime: {
       border: "border-[#a3e635]/20",
@@ -100,7 +102,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
               <Eye size={18} />
             </button>
             <button 
-              onClick={() => onAddToCart?.(product)}
+              onClick={() => onAddToCart ? onAddToCart(product) : addToCart(product)}
               className={`p-3 ${style.btn} text-black rounded-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center`}
               title="Agregar al carrito"
             >

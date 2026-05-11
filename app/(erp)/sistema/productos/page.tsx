@@ -53,6 +53,21 @@ export default function ProductosAdminPage() {
     fetchProducts();
   }, []);
 
+  // Keyboard and Paste listeners for Speed
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      if (!showModal) return;
+      const item = e.clipboardData?.items[0];
+      if (item?.type.includes("image")) {
+        const file = item.getAsFile();
+        if (file) handleFileUpload(file);
+      }
+    };
+
+    window.addEventListener("paste", handlePaste);
+    return () => window.removeEventListener("paste", handlePaste);
+  }, [showModal]);
+
   async function fetchProducts() {
     setLoading(true);
     const { data, error } = await supabase
@@ -309,6 +324,7 @@ export default function ProductosAdminPage() {
                 <div className="space-y-2">
                   <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Nombre</label>
                   <input 
+                    autoFocus
                     required
                     className="w-full bg-black border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-[#a3e635] outline-none transition-all"
                     placeholder="Ej: KREATONITE Limón"
@@ -401,7 +417,7 @@ export default function ProductosAdminPage() {
                       </div>
                       <div>
                         <p className="text-sm font-bold text-gray-300">Arrastra la foto aquí</p>
-                        <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">O haz clic para buscar en tu PC</p>
+                        <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">O haz clic / Presiona Ctrl+V para pegar</p>
                       </div>
                       <input 
                         type="file" 

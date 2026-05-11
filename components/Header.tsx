@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ShoppingCart, User, Menu, X, Zap } from "lucide-react";
+import { useCart } from "@/context/CartContext";
 
 const NAV = [
   { label: "INICIO", href: "/" },
@@ -13,7 +14,7 @@ const NAV = [
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState("inicio");
+  const { totalItems } = useCart();
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 40);
@@ -238,7 +239,7 @@ export default function Header() {
                 display: "flex", alignItems: "center", justifyContent: "center",
                 border: "1px solid rgba(163,230,53,0.5)",
               }}>
-                0
+                {totalItems}
               </span>
             </a>
 

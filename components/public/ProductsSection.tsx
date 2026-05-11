@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Zap, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import ProductCard from "./ProductCard";
+import { useCart } from "@/context/CartContext";
 
 export default function ProductsSection() {
   const [products, setProducts] = useState<any[]>([]);
@@ -37,10 +38,10 @@ export default function ProductsSection() {
     fetchProducts();
   }, []);
 
+  const { addToCart } = useCart();
+
   const handleAddToCart = (product: any) => {
-    // Placeholder para futura lógica de carrito
-    console.log("Añadido al carrito:", product.name);
-    alert(`¡${product.name} añadido al carrito!`);
+    addToCart(product);
   };
 
   return (

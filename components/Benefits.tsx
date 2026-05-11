@@ -1,170 +1,139 @@
 "use client";
 
-import { Dumbbell, Droplets, Brain, Zap } from "lucide-react";
+import { 
+  Dumbbell, 
+  Droplets, 
+  Brain, 
+  Zap, 
+  ShieldCheck, 
+  Target,
+  Trophy,
+  Flame
+} from "lucide-react";
 
 const BENEFITS = [
   {
     Icon: Dumbbell,
     title: "MÁS FUERZA",
-    subtitle: "Y POTENCIA",
-    desc: "Mejora tu rendimiento en cada repetición con creatina pura de alta absorción.",
-    delay: "0s",
-    gradient: "linear-gradient(135deg, rgba(163,230,53,0.08) 0%, transparent 60%)",
+    subtitle: "EXPLOSIVA",
+    desc: "Aumenta tus niveles de ATP para una potencia muscular sin precedentes en cada set.",
+    color: "#a3e635",
+    glow: "rgba(163,230,53,0.15)"
   },
   {
     Icon: Droplets,
     title: "HIDRATACIÓN",
-    subtitle: "SUPERIOR",
-    desc: "Electrolitos para mantener tu cuerpo en equilibrio óptimo durante el entreno.",
-    delay: "0.1s",
-    gradient: "linear-gradient(135deg, rgba(0,180,255,0.06) 0%, transparent 60%)",
+    subtitle: "CELULAR",
+    desc: "Electrolitos clave que mantienen el equilibrio osmótico y evitan la fatiga prematura.",
+    color: "#00f2ff",
+    glow: "rgba(0,242,255,0.1)"
   },
   {
     Icon: Brain,
-    title: "ENFOQUE MENTAL",
-    subtitle: "Y ENERGÍA",
-    desc: "Claridad mental y energía sostenida cuando más lo necesitas.",
-    delay: "0.2s",
-    gradient: "linear-gradient(135deg, rgba(163,230,53,0.07) 0%, transparent 60%)",
+    title: "ENFOQUE",
+    subtitle: "NEURAL",
+    desc: "Vitamina B12 de alta pureza para una conexión mente-músculo inquebrantable.",
+    color: "#ff00e1",
+    glow: "rgba(255,0,225,0.1)"
   },
   {
-    Icon: Zap,
+    Icon: Trophy,
     title: "RECUPERACIÓN",
-    subtitle: "MÁS RÁPIDA",
-    desc: "Reduce la fatiga y mejora tu recuperación muscular post-entreno.",
-    delay: "0.3s",
-    gradient: "linear-gradient(135deg, rgba(255,200,0,0.06) 0%, transparent 60%)",
+    subtitle: "ELITE",
+    desc: "Acelera la síntesis de proteínas y reduce el tiempo de descanso entre sesiones.",
+    color: "#ffbb00",
+    glow: "rgba(255,187,0,0.1)"
   },
 ];
 
 export default function Benefits() {
   return (
-    <section
-      id="beneficios"
-      style={{
-        padding: "var(--section-pad)",
-        background: "transparent",
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      {/* Background accent */}
-      <div style={{
-        position: "absolute", top: "50%", left: "50%",
-        transform: "translate(-50%, -50%)",
-        width: "700px", height: "400px",
-        background: "radial-gradient(ellipse, rgba(163,230,53,0.06) 0%, transparent 65%)",
-        pointerEvents: "none",
-      }} />
-
-      <div className="electric-sep" style={{ position: "absolute", top: 0, left: 0, right: 0 }} />
-
-      <div className="container" style={{ position: "relative", zIndex: 2 }}>
-        {/* Heading */}
-        <div style={{ textAlign: "center", marginBottom: "64px" }}>
-          <div className="section-label" style={{ margin: "0 auto 16px" }}>
-            <Zap size={11} fill="var(--neon)" color="var(--neon)" />
-            FÓRMULA 3 EN 1
+    <section id="beneficios" className="py-32 px-6 bg-[#050505] relative overflow-hidden">
+      {/* Background Decor */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-[radial-gradient(circle_at_50%_0%,rgba(163,230,53,0.05),transparent_70%)] pointer-events-none" />
+      
+      <div className="max-w-7xl mx-auto relative z-10">
+        {/* Header */}
+        <div className="text-center mb-24 space-y-4">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#a3e635]/10 border border-[#a3e635]/20 text-[#a3e635] text-[10px] font-black tracking-[0.3em] uppercase">
+            <ShieldCheck size={14} />
+            The Ultimate Formula
           </div>
-          <h2 className="section-heading">
-            <span style={{ color: "#fff" }}>BENEFICIOS </span>
-            <span className="neon-text">REALES</span>
+          <h2 className="text-6xl md:text-8xl font-black text-white tracking-tighter uppercase leading-[0.85]">
+            MÁS QUE UN <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a3e635] via-white to-[#a3e635] animate-gradient-x">SUPLEMENTO</span>
           </h2>
-          <span className="neon-line" />
-          <p style={{
-            color: "var(--gray-2)", fontSize: "15px",
-            marginTop: "20px", maxWidth: "480px", margin: "20px auto 0",
-            lineHeight: 1.6,
-          }}>
-            Una fórmula completa desarrollada para atletas que no aceptan mediocridad
+          <p className="max-w-2xl mx-auto text-gray-500 text-lg md:text-xl font-medium pt-4">
+            Combinamos los 3 pilares del rendimiento en una sola toma épica.
           </p>
         </div>
 
-        {/* Cards */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-            gap: "20px",
-          }}
-        >
-          {BENEFITS.map(({ Icon, title, subtitle, desc, delay, gradient }) => (
-            <div
-              key={title}
-              className="card"
-              style={{
-                padding: "36px 28px",
-                animationDelay: delay,
-                background: gradient,
-              }}
+        {/* Dynamic Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {BENEFITS.map((benefit, i) => (
+            <div 
+              key={i}
+              className="group relative bg-[#0a0a0a] border border-white/5 hover:border-[#a3e635]/30 rounded-[40px] p-8 transition-all duration-500 hover:-translate-y-2"
             >
-              {/* Icon */}
-              <div style={{
-                position: "relative",
-                display: "inline-flex",
-                marginBottom: "24px",
-              }}>
-                <div className="icon-circle" style={{ width: "68px", height: "68px" }}>
-                  <Icon size={30} color="var(--neon)" strokeWidth={1.4} />
+              {/* Card Glow */}
+              <div 
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-2xl z-0" 
+                style={{ background: `radial-gradient(circle at 50% 50%, ${benefit.glow}, transparent 70%)` }}
+              />
+
+              <div className="relative z-10 space-y-6">
+                <div 
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:rotate-6"
+                  style={{ backgroundColor: `${benefit.color}15`, border: `1px solid ${benefit.color}30` }}
+                >
+                  <benefit.Icon size={32} style={{ color: benefit.color }} />
                 </div>
-                {/* Glow behind icon */}
-                <div style={{
-                  position: "absolute", inset: "-10px",
-                  background: "radial-gradient(circle, rgba(163,230,53,0.15) 0%, transparent 70%)",
-                  borderRadius: "50%",
-                  pointerEvents: "none",
-                }} />
+
+                <div className="space-y-1">
+                  <h3 className="text-[10px] font-black tracking-[0.4em] text-gray-500 uppercase">
+                    {benefit.title}
+                  </h3>
+                  <h4 className="text-3xl font-black text-white uppercase tracking-tighter">
+                    {benefit.subtitle}
+                  </h4>
+                </div>
+
+                <div className="h-px w-12 bg-white/10 group-hover:w-full transition-all duration-700" />
+
+                <p className="text-sm text-gray-400 leading-relaxed group-hover:text-gray-200 transition-colors">
+                  {benefit.desc}
+                </p>
               </div>
 
-              <h3
-                style={{
-                  fontFamily: "var(--font-d)",
-                  fontSize: "24px",
-                  fontWeight: 400,
-                  color: "#fff",
-                  letterSpacing: "1.5px",
-                  marginBottom: "2px",
-                  lineHeight: 1.1,
-                }}
-              >
-                {title}
-              </h3>
-              <h4
-                className="neon-text"
-                style={{
-                  fontFamily: "var(--font-d)",
-                  fontSize: "24px",
-                  fontWeight: 400,
-                  letterSpacing: "1.5px",
-                  marginBottom: "16px",
-                  lineHeight: 1.1,
-                }}
-              >
-                {subtitle}
-              </h4>
-
-              {/* Divider */}
-              <div style={{
-                width: "40px", height: "2px",
-                background: "var(--neon)",
-                boxShadow: "0 0 8px rgba(163,230,53,0.5)",
-                marginBottom: "16px",
-                borderRadius: "2px",
-              }} />
-
-              <p style={{
-                color: "var(--gray-2)",
-                fontSize: "14px",
-                lineHeight: 1.65,
-              }}>
-                {desc}
-              </p>
+              {/* Number indicator */}
+              <div className="absolute top-8 right-8 text-4xl font-black text-white/5 group-hover:text-[#a3e635]/10 transition-colors italic">
+                0{i + 1}
+              </div>
             </div>
           ))}
         </div>
-      </div>
 
-      <div className="electric-sep" style={{ position: "absolute", bottom: 0, left: 0, right: 0 }} />
+        {/* Bottom CTA / Highlight */}
+        <div className="mt-24 p-1 rounded-[40px] bg-gradient-to-r from-transparent via-[#a3e635]/20 to-transparent">
+          <div className="bg-[#0a0a0a] rounded-[39px] p-12 text-center flex flex-col md:flex-row items-center justify-between gap-8 border border-white/5">
+            <div className="text-left space-y-2">
+              <h3 className="text-2xl font-black text-white uppercase tracking-tight">¿Listo para cambiar el juego?</h3>
+              <p className="text-gray-500 font-medium italic">"La mediocridad no es una opción en KREATONITE"</p>
+            </div>
+            <div className="flex gap-4">
+              <div className="flex flex-col items-center">
+                <span className="text-3xl font-black text-[#a3e635]">100%</span>
+                <span className="text-[8px] font-bold text-gray-600 uppercase tracking-widest">Pureza</span>
+              </div>
+              <div className="w-px h-12 bg-white/5" />
+              <div className="flex flex-col items-center">
+                <span className="text-3xl font-black text-[#a3e635]">0%</span>
+                <span className="text-[8px] font-bold text-gray-600 uppercase tracking-widest">Relleno</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

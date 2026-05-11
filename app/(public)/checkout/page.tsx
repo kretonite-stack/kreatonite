@@ -3,6 +3,7 @@
 import { useCart } from "@/context/CartContext";
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Zap } from "lucide-react";
 import Link from "next/link";
+// Forzar actualización v2
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 

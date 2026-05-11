@@ -8,7 +8,7 @@ const NAV = [
   { label: "INICIO", href: "/" },
   { label: "PRODUCTOS", href: "/productos" },
   { label: "BENEFICIOS", href: "/beneficios" },
-  { label: "RETIRO / DESPACHO", href: "/centros-retiro" },
+  { label: "REGISTRO", href: "/registro" },
 ];
 
 export default function Header() {

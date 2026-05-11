@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { 
   LayoutDashboard, 
   Package, 
@@ -9,20 +9,29 @@ import {
   Users, 
   Settings, 
   ClipboardList,
-  Zap
+  Zap,
+  Lock
 } from "lucide-react";
 
+import { supabase } from "@/lib/supabase";
+
 const MENU_ITEMS = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Pedidos", href: "/pedidos", icon: ClipboardList },
-  { label: "Productos", href: "/productos", icon: Package },
-  { label: "Inventario", href: "/inventario", icon: ShoppingCart },
-  { label: "Clientes", href: "/clientes", icon: Users },
-  { label: "Configuración", href: "/configuracion", icon: Settings },
+  { label: "Dashboard", href: "/sistema/dashboard", icon: LayoutDashboard },
+  { label: "Pedidos", href: "/sistema/pedidos", icon: ClipboardList },
+  { label: "Productos", href: "/sistema/productos", icon: Package },
+  { label: "Inventario", href: "/sistema/inventario", icon: ShoppingCart },
+  { label: "Clientes", href: "/sistema/clientes", icon: Users },
+  { label: "Configuración", href: "/sistema/configuracion", icon: Settings },
 ];
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    router.push("/sistema/login");
+  };
 
   return (
     <aside className="w-64 border-r border-[#a3e635]/20 flex flex-col h-screen sticky top-0 bg-[#0a0a0a]">
@@ -30,7 +39,7 @@ export default function AdminSidebar() {
         <div className="w-8 h-8 bg-gradient-to-br from-[#a3e635] to-[#84cc16] rounded flex items-center justify-center shadow-[0_0_15px_rgba(163,230,53,0.4)]">
           <Zap size={18} fill="#000" color="#000" />
         </div>
-        <span className="font-bold tracking-[0.2em] text-[#a3e635] text-lg">SYSTEM</span>
+        <span className="font-bold tracking-[0.2em] text-[#a3e635] text-lg uppercase">CONTROL</span>
       </div>
 
       <nav className="flex-grow p-4 space-y-2">
@@ -55,7 +64,7 @@ export default function AdminSidebar() {
         })}
       </nav>
 
-      <div className="p-4 border-t border-[#a3e635]/10">
+      <div className="p-4 border-t border-[#a3e635]/10 space-y-2">
         <Link 
           href="/"
           className="flex items-center gap-3 px-4 py-3 text-xs text-gray-500 hover:text-[#a3e635] transition-colors"
@@ -63,6 +72,13 @@ export default function AdminSidebar() {
           <Zap size={14} />
           Ver Sitio Público
         </Link>
+        <button
+          onClick={handleSignOut}
+          className="w-full flex items-center gap-3 px-4 py-3 text-xs text-red-500/70 hover:text-red-500 transition-colors"
+        >
+          <Lock size={14} />
+          Cerrar Sesión
+        </button>
       </div>
     </aside>
   );

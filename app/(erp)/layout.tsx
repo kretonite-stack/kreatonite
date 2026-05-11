@@ -22,8 +22,15 @@ export default function ErpLayout({
     // Check initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      
+      const isAdmin = session?.user?.email === "kretonite@gmail.com";
+
       if (!session && !isLoginPage) {
         router.push("/sistema/login");
+      } else if (session && !isAdmin && !isLoginPage) {
+        // Si está logueado pero no es el admin, lo sacamos o mostramos error
+        supabase.auth.signOut();
+        router.push("/sistema/login?error=Unauthorized");
       }
       setLoading(false);
     });
@@ -31,8 +38,13 @@ export default function ErpLayout({
     // Listen for changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      const isAdmin = session?.user?.email === "kretonite@gmail.com";
+
       if (!session && !isLoginPage) {
         router.push("/sistema/login");
+      } else if (session && !isAdmin && !isLoginPage) {
+        supabase.auth.signOut();
+        router.push("/sistema/login?error=Unauthorized");
       }
     });
 

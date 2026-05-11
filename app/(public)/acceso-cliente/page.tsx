@@ -11,8 +11,6 @@ import {
   ArrowRight
 } from "lucide-react";
 import Link from "next/link";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 export default function AccesoClientePage() {
   const [loading, setLoading] = useState(false);
@@ -43,11 +41,8 @@ export default function AccesoClientePage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#050505] flex flex-col">
-      <Header />
-      
-      <div className="flex-grow flex items-center justify-center py-20 px-4 relative overflow-hidden">
-        {/* Background Decor */}
+    <div className="flex-grow flex items-center justify-center py-20 px-4 relative overflow-hidden">
+      {/* Background Decor */}
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_40%,rgba(163,230,53,0.05),transparent_60%)] pointer-events-none" />
         
         <div className="max-w-md w-full bg-[#111]/80 backdrop-blur-xl border border-[#a3e635]/10 rounded-[40px] p-8 md:p-12 relative z-10 shadow-[0_0_80px_rgba(0,0,0,0.5)]">
@@ -110,8 +105,6 @@ export default function AccesoClientePage() {
           </form>
         </div>
       </div>
-
-      <Footer />
-    </main>
+    </div>
   );
 }

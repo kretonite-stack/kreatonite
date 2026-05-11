@@ -13,8 +13,6 @@ import {
   TrendingUp,
   HeadphonesIcon
 } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 export default function CentrosRetiroPage() {
   const benefits = [
@@ -48,9 +46,7 @@ export default function CentrosRetiroPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
-      <Header />
-      
+    <div className="min-h-screen text-white">
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 px-6 overflow-hidden">
         {/* Background Gradients */}
@@ -267,8 +263,6 @@ export default function CentrosRetiroPage() {
           </div>
         </div>
       </section>
-
-      <Footer />
-    </main>
+    </div>
   );
 }

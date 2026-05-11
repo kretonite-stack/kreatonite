@@ -3,17 +3,12 @@
 import { useCart } from "@/context/CartContext";
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Zap } from "lucide-react";
 import Link from "next/link";
-// Forzar actualización v2
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 export default function CheckoutPage() {
   const { cart, removeFromCart, updateQuantity, totalPrice, totalItems } = useCart();
 
   return (
-    <main className="min-h-screen bg-[#050505]">
-      <Header />
-      
+    <div className="min-h-screen">
       <section className="py-24 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-12 border-b border-[#a3e635]/10 pb-12">
@@ -140,8 +135,6 @@ export default function CheckoutPage() {
           )}
         </div>
       </section>
-
-      <Footer />
-    </main>
+    </div>
   );
 }

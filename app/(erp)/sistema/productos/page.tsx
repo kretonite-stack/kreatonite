@@ -12,7 +12,9 @@ import {
   DollarSign, 
   Tag,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  Upload,
+  Image as ImageIcon
 } from "lucide-react";
 
 interface ProductDB {
@@ -30,6 +32,8 @@ interface ProductDB {
 export default function ProductosAdminPage() {
   const [products, setProducts] = useState<ProductDB[]>([]);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<ProductDB | null>(null);
 
@@ -63,6 +67,48 @@ export default function ProductosAdminPage() {
     }
     setLoading(false);
   }
+
+  const handleFileUpload = async (file: File) => {
+    try {
+      setUploading(true);
+      
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('product-images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage
+        .from('product-images')
+        .getPublicUrl(filePath);
+
+      setFormData({ ...formData, image_url: data.publicUrl });
+    } catch (error: any) {
+      alert("Error subiendo imagen: " + error.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const onDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const onDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const onDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) handleFileUpload(file);
+  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -315,14 +361,57 @@ export default function ProductosAdminPage() {
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">URL de Imagen</label>
-                <input 
-                  className="w-full bg-black border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-[#a3e635] outline-none transition-all"
-                  placeholder="/images/products/kreatonite-limon.jfif"
-                  value={formData.image_url}
-                  onChange={e => setFormData({...formData, image_url: e.target.value})}
-                />
+              <div className="space-y-4">
+                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Imagen del Producto</label>
+                
+                <div 
+                  onDragOver={onDragOver}
+                  onDragLeave={onDragLeave}
+                  onDrop={onDrop}
+                  className={`relative group min-h-[250px] border-2 border-dashed rounded-[32px] transition-all duration-300 overflow-hidden flex flex-col items-center justify-center p-6 ${
+                    isDragging 
+                      ? "border-[#a3e635] bg-[#a3e635]/5 shadow-[0_0_30px_rgba(163,230,53,0.1)]" 
+                      : "border-white/10 bg-black/40 hover:border-[#a3e635]/40"
+                  }`}
+                >
+                  {uploading ? (
+                    <div className="flex flex-col items-center gap-4">
+                      <Loader2 className="animate-spin text-[#a3e635]" size={40} />
+                      <p className="text-[10px] font-bold text-[#a3e635] uppercase tracking-widest animate-pulse">Subiendo imagen...</p>
+                    </div>
+                  ) : formData.image_url ? (
+                    <div className="relative w-full h-full min-h-[200px] group/img">
+                      <img src={formData.image_url} alt="Preview" className="w-full h-[200px] object-contain rounded-xl" />
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center rounded-xl backdrop-blur-sm">
+                        <label className="cursor-pointer px-6 py-3 bg-[#a3e635] text-black font-black rounded-xl text-[10px] uppercase tracking-widest hover:scale-105 transition-transform">
+                          Cambiar Foto
+                          <input 
+                            type="file" 
+                            accept="image/*"
+                            onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])}
+                            className="hidden"
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center gap-4 text-center">
+                      <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-[#a3e635]/10 transition-colors">
+                        <Upload className="text-gray-500 group-hover:text-[#a3e635] transition-colors" size={30} />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-gray-300">Arrastra la foto aquí</p>
+                        <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">O haz clic para buscar en tu PC</p>
+                      </div>
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])}
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="flex items-center gap-8 p-4 bg-black/40 rounded-2xl border border-white/5">

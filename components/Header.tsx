@@ -173,7 +173,8 @@ export default function Header() {
             </a>
 
             <a
-              href="/acceso-colaboradores"
+              href="/sistema/login"
+              target="_blank"
               title="Acceso Colaboradores"
               style={{
                 color: "var(--gray-1)",
@@ -288,7 +289,7 @@ export default function Header() {
                   fontWeight: 400,
                   letterSpacing: "2px",
                   padding: "14px 0",
-                  borderBottom: i < NAV.length - 1 ? "1px solid rgba(163,230,53,0.08)" : "none",
+                  borderBottom: "1px solid rgba(163,230,53,0.08)",
                   transition: "color 0.2s",
                 }}
                 onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--neon)")}
@@ -298,6 +299,28 @@ export default function Header() {
                 {n.label}
               </a>
             ))}
+            {/* Mobile ERP Access */}
+            <a
+              href="/sistema/login"
+              target="_blank"
+              onClick={() => setOpen(false)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                color: "var(--neon)",
+                textDecoration: "none",
+                fontFamily: "var(--font-d)",
+                fontSize: "16px",
+                fontWeight: 400,
+                letterSpacing: "2px",
+                padding: "14px 0",
+                transition: "all 0.2s",
+              }}
+            >
+              <Zap size={10} fill="var(--neon)" color="var(--neon)" />
+              SISTEMA CONTROL
+            </a>
           </div>
         )}
       </header>

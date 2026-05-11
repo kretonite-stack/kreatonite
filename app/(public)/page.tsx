@@ -1,10 +1,10 @@
 import Hero from "@/components/Hero";
 import Benefits from "@/components/Benefits";
 import ProductsSection from "@/components/public/ProductsSection";
-import Flavors from "@/components/Flavors";
 import Comparison from "@/components/Comparison";
 import Community from "@/components/Community";
 
+// Versión actualizada - sección sabores eliminada
 export default function HomePage() {
   return (
     <>
@@ -16,9 +16,6 @@ export default function HomePage() {
       </section>
       <section id="productos">
         <ProductsSection />
-      </section>
-      <section id="sabores">
-        <Flavors />
       </section>
       <section id="comparacion">
         <Comparison />
